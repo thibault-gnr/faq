@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <a href="{{ path('question_edit', {'user': app.user.username } )}}" class="ask-question"><i class="fas fa-plus"></i> Poser une question</a>
+    {% endif %}
+    {% if (question.isActive) %}
+        <div class="article_question mt-3">
+            <h3 class="question-title question-title_question"> {{ question.title }}</h3> 
+            {% for currentTag in question.tags %}
+                <a href="" class="post-tag-name " >{{ currentTag.tagName }}</a>
+            {% endfor %}          
+            <p class="article_question_editor">Par : {% if question.user %} {{ question.user.username }} {% else %} Utilisateur désincrit {% endif %}</p>
+            <p class="article_question_date"> le {{ question.createdAt|date("d/m/Y") }}</p>
+            <p>{{ question.body }}</p>
+        </div>
+        {% for message in app.flashes('ajoutCommentaire') %}
+            <div class="flash-notice d-flex justify-content-center">
+                {{ message }}
+            </div>
+        {% endfor %}
+        <div class="comment-submit-part">
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <div class="article_question">
+                {{ form_start(form, { 'attr' : {'novalidate' : 'novalidate'} } )}}
+
+                    {{ form_widget(form) }}
+
+                    <input type="submit" class="validate-button-comment login" value="Enregistrer" />
+
+                {{ form_end(form)}}
+                </div>
+            {% else %}
+
+            <div class="alert alert-info" role="alert">
+            <a href="{{ path('login')}}"><p class="information-pannel-text">Vous ne pouvez pas encore répondre à cette question, pour cela vous devez vous connecter !</p></a>
+            </div>
+            {% endif %}
+        </div>
+        <div class="comment-part">
+            <h3 class="title-category title-category_question">Commentaires</h3>
+            {% for message in app.flashes('desactive') %}
+                <div class="flash-notice d-flex justify-content-center">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+            {% for commentQuestion in comments %}  
+                {% if is_granted('ROLE_KRYPTON_MODERATOR') %}
+                    <div class="article_comment">
+                        <p class="btn btn-info" class="">Le commentaire est {% if commentQuestion.isActive %}Actif{% else %}Inactif{% endif %} </p>
+                        <p class="article_question_editor">{% if commentQuestion.user.username %}{{ commentQuestion.user.username }}{% else %} Utilisateur désincrit {% endif %}</p>
+                        <p class="article_question_date"> le {{ commentQuestion.createdAt|date("m/d/Y") }}</p>   
+
+                        <p>{{ commentQuestion.body }}</p>
+                        {% if (question.user.username == app.user.username) %}
+                            <a class="btn btn-success" href=" {{ path('comment_validate' ,{'id': commentQuestion.id}) }} ">Epingler la réponse</a>
+                        {% endif %}
+                            <div class="validate-button">
+                            <a href="{{ path('desactive_comment', {'id': commentQuestion.id} )}}" class="btn btn-danger">Désactiver</a>
+                            <a href="{{ path('active_comment', {'id': commentQuestion.id} )}}" class="btn btn-success">Réactiver</a>
+                            </div>
+                    </div>
+                {% elseif is_granted('ROLE_KRYPTON_MODERATOR') == false and commentQuestion.isActive %}
+                    {% if commentQuestion.validateComment %}
+                        <div class="article_comment validate-comment">
+                        <p class="btn btn-success btn-lg btn-block">Réponse validée !</p>
+                    {% else %}
+                        <div class="article_comment">
+                    {% endif %}
+                        <p class="article_question_editor">{% if commentQuestion.user.username %}{{ commentQuestion.user.username }}{% else %} Utilisateur désincrit {% endif %}</p>
+                        <p class="article_question_date"> le {{ commentQuestion.createdAt|date("m/d/Y") }}</p>
+                        <p>{{ commentQuestion.body }}</p>
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') and question.user.username == app.user.username %}
+                            {% if commentQuestion.validateComment %}
+                                <a class=" btn btn-warning" href=" {{ path('comment_novalidate' ,{'id': commentQuestion.id }) }} ">Ne plus épingler la réponse</a>
+                            {% else %}
+                                <a class="btn btn-success" href=" {{ path('comment_validate' ,{'id': commentQuestion.id}) }} ">Epingler la réponse</a>
+                            {% endif %}
+                        {% endif %}
+                            
+                        
+                    </div>
+                {% endif %}
+            {% else %}
+                <p> Il n'y à pas encore de réponse à cette question ... </p>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                <p class="information-pannel-text">Désolé la question a été temporairement supprimée ! N'hésitez pas à revenir plus tard !</p>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

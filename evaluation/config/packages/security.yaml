@@ -1,0 +1,38 @@
+security:
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    encoders:
+        App\Entity\User:
+           algorithm: bcrypt
+    
+    providers:
+        db_provider:
+            entity:
+                class: App:User
+                property: username
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: true
+
+            logout:
+                path: app_logout # nom de la route qui va nous permettre de nous deloguer
+
+            form_login:
+                login_path: login #nom de la route qui va afficher dans mon security controller le formulaire de saisie
+                check_path: login # nom de la route qui va verifier les données saisie
+                csrf_token_generator: security.csrf.token_manager
+
+            provider: db_provider
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        - { path: ^/admin, roles: ROLE_KRYPTON_ADMIN }
+        - { path: ^/moderator, roles: ROLE_KRYPTON_MODERATOR }
+        - { path: ^/profil/user, roles: ROLE_KRYPTON_USER }
+    
+    role_hierarchy:
+        ROLE_KRYPTON_ADMIN: ROLE_KRYPTON_MODERATOR
+        ROLE_KRYPTON_MODERATOR: ROLE_KRYPTON_USER

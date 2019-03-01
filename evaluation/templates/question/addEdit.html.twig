@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="mt-4">
+    <h3 class="question-title question-title_question"> Votre question </h3> 
+    {{ form_start(form, { 'attr' : {'novalidate' : 'novalidate'} } )}}
+
+        {{ form_widget(form) }}
+
+        <input type="submit" class="btn btn-success" value="Enregistrer" />
+
+    {{ form_end(form)}}
+    </div>
+{% endblock %}

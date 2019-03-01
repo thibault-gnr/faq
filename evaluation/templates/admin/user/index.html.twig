@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tags!{% endblock %}
+
+{% block body %}
+<h2 class="title-category"> liste des Users</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Date de création</th>
+                <th>Role</th>
+                <th class="d-flex justify-content-end">actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.userName }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.createdDate|date('d/m/Y') }}</td>
+                <td>{{ user.role }}</td>
+                <td class="d-flex justify-content-end">
+                    <a href=" {{ path('change_to_admin' , {'id' : user.id})}}" class="btn btn-warning" >Modifier</a>
+                    <a href="{{path('admin_user_delete', {'id':user.id }) }}" class="btn btn-danger">
+                        Supprimer
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

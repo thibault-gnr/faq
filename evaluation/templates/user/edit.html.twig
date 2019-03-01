@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+
+{% block body %}
+
+    <div class="container-form">
+        <h3 class="title-form font-weight-bold">Votre profil</h3> 
+        <p> Vous pouvez maintenant modifier vos informations</p>
+
+        {{ form_start(form, { 'attr' : {'novalidate' : 'novalidate'} } )}}
+
+            {{ form_widget(form) }}
+
+            <input type="submit" class="validate-button-comment" value="Enregistrer" />
+
+        {{ form_end(form)}}
+    </div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+
+    {% for message in app.flashes('notice_edit_profil') %}
+        <div class="flash-notice  d-flex justify-content-center">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <h3 class="title-form font-weight-bold">Bonjour {{app.user.username}}</h3>
+
+    <div class="personnal-information">
+        <p>Vos informations personnelles :</p>
+        <p>Adresse mail: {{app.user.email}}</p>
+        <p>Sur le site depuis le: {{app.user.createdDate|date("d/m/Y")}}</p>
+        <a href="{{ path('edit_user', {'id': app.user.id }) }}" class="validate-button-comment login"></i>Modifier mon profil</a>
+    </div>
+
+    <h2 class="title-category">liste de vos questions </h2>
+
+    <table class="table table-striped">
+        <tbody>
+        {% for question in questions |sort|reverse %}
+            <tr>
+                <td class="summary_question">
+                    
+                    <a href="{{ path('question_show', {'slug': question.slug})}}"><h3 class="question-title">{{ question.title }} </h3></a>
+                
+                    <div class="post-tag">
+                        {% for currentTag in question.tags %}
+                            <a href="" class="post-tag-name" >{{ currentTag.tagName }}</a>
+                        {% endfor %}
+                    </div> 
+                    <div class="post-edit">
+                        <a href="{{ path('question_show', {'slug': question.slug} )}}" class="post post-date" class="">le: {{ question.createdAt|date("d/m/Y") }}</a>
+                    </div>   
+                </td>
+                <td scope="row" class="votes">
+                    <div class="validate-button">
+                        <p class="d-inline-block m-0 label-number-information">Nombre de votes:</p>
+                        <span class="badge badge-light">0</span>
+                    </div>
+                    <div class="validate-button">
+                        <p class="d-inline-block m-0 label-number-information">Réponses validées:</p>
+                        <span class="badge badge-light">0</span>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <h2 class="title-category">liste de vos réponses </h2>
+    <table class="table table-striped">
+        <tbody>
+        {% for comment in comments |sort|reverse %}
+            <tr>
+                <td class="summary_question">
+                    <div class="post-edit">
+                        <p class="post post-date" >le: {{ comment.createdAt|date("d/m/Y") }}</p>
+                        <a href="{{ path('question_show', {'slug':comment.question.slug} )}}" class="post post-date d-block" >Concernant la question: {{ comment.question.title }}</a>
+                    </div>  
+                    <h3 class="question-title">{{ comment.body }} </h3>
+                
+
+                </td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

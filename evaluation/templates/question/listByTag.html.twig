@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FAQ Oclock{% endblock %}
+
+{% block stylesheets %}
+    
+{% endblock %}
+
+{% block body %}
+
+<h2 class="title-category title-category-tag">liste des questions associées au tag : {{ tag.tagName}} </h2>
+
+<table class="table table-striped">
+    <tbody>
+    {% for question in tag.questions %}
+        <tr>
+            <td class="summary_question">
+                
+                <a href="{{ path('question_show', {'slug': question.slug})}}"><h3 class="question-title">{{ question.title }} </h3></a>
+            
+                <div class="post-tag">
+                    {% for currentTag in question.tags %}
+                        <a href="" class="post-tag-name" >{{ currentTag.tagName }}</a>
+                    {% endfor %}
+                </div> 
+                <div class="post-edit">
+                    <a href="{{ path('question_show', {'slug': question.slug} )}}" class="post post-date" class="">le: {{ question.createdAt|date("d/m/Y") }}</a>
+                </div>   
+            </td>
+            <td scope="row" class="votes">
+                <div class="validate-button">
+                    <p class="d-inline-block m-0 label-number-information">Nombre de votes:</p>
+                    <span class="badge badge-light">0</span>
+                </div>
+                <div class="validate-button">
+                    <p class="d-inline-block m-0 label-number-information">Réponses validées:</p>
+                    <span class="badge badge-light">0</span>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}

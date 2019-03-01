@@ -1,0 +1,139 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FAQ Oclock{% endblock %}
+
+{% block stylesheets %}
+    
+{% endblock %}
+
+{% block body %}
+
+    {% for message in app.flashes('notice') %}
+        <div class="flash-notice  d-flex justify-content-center">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('desactive') %}
+        <div class="flash-notice  d-flex justify-content-center">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <div class="row">
+        <div class="col mb-50">
+            <div class="question-list d-flex justify-content-between ">
+                <h2 class="title-category"> liste des questions </h2>
+                {% for message in app.flashes('Validate') %}
+                    <div class="flash-notice d-flex justify-content-center">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <a href="{{ path('question_edit', {'user': app.user.username } )}}" class="ask-question"><i class="fas fa-plus"></i> Poser une question</a>
+                {% endif %}
+            </div>
+            {% for message in app.flashes('ajoutQuestion') %}
+                <div class="flash-notice d-flex justify-content-center">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            <table class="table table-striped">
+                <tbody>
+                {% for currentQuestion in questions %}
+                    <tr>
+                    {% if is_granted('ROLE_KRYPTON_MODERATOR') %}
+                        <td class="summary_question">
+                            
+                            <a href="{{ path('question_show', {'slug': currentQuestion.slug})}}"><h3 class="question-title">{{ currentQuestion.title }} </h3></a>
+                        
+                            <div class="post-tag">
+                                {% for currentTag in currentQuestion.tags %}
+                                    <a href=" {{ path('questions_by_tag' , {'id': currentTag.id }) }}" class="post-tag-name" >{{ currentTag.tagName }}</a>
+                                {% endfor %}
+                            </div> 
+                            <div class="post-edit">
+                                
+                                    <a href="{{ path('question_show', {'slug': currentQuestion.slug} )}}" class="post post-editor" class="">par: {% if currentQuestion.user %}{{ currentQuestion.user.username }}{% else %}Utilisateur désincrit{% endif %}</a>
+                                
+
+                                
+                                <a href="{{ path('question_show', {'slug': currentQuestion.slug} )}}" class="post post-date" class="">le: {{ currentQuestion.createdAt|date("d/m/Y") }}</a>
+                            </div>   
+                            <div class="post-edit">
+                                <p class="btn btn-info" class="">La question est {% if currentQuestion.isActive %}Active{% else %}Inactive{% endif %} </p>
+                            </div>   
+                        </td>
+                        <td scope="row" class="votes">
+                            <div class="validate-button">
+                                <p class="d-inline-block m-0 label-number-information">Nombre de votes:</p>
+                                <span class="badge badge-light">0</span>
+                            </div>
+                            <div class="validate-button">
+                                <p class="d-inline-block m-0 label-number-information">Réponses validées:</p>
+                                <span class="badge badge-light">0</span>
+                            </div>
+                            <div class="validate-button">
+                                <a href="{{ path('desactive_questions', {'id': currentQuestion.id} )}}" class="btn btn-danger">Désactiver</a>
+                                <a href="{{ path('active_questions', {'id': currentQuestion.id} )}}" class="btn btn-success">Activer</a>
+                            </div>
+                        </td>
+
+                    {% elseif is_granted('ROLE_KRYPTON_MODERATOR') == false and currentQuestion.isActive %}
+                        <td class="summary_question">
+                            
+                            <a href="{{ path('question_show', {'slug': currentQuestion.slug})}}"><h3 class="question-title">{{ currentQuestion.title }} </h3></a>
+                        
+                            <div class="post-tag">
+
+                                {% for currentTag in currentQuestion.tags %}
+                                    <a href="{{ path('questions_by_tag' , {'id': currentTag.id }) }}" class="post-tag-name" >{{ currentTag.tagName }}</a>
+                                {% endfor %}
+                            </div> 
+                            <div class="post-edit">
+                                    <a href="{{ path('question_show', {'slug': currentQuestion.slug} )}}" class="post post-editor" class="">par: {% if currentQuestion.user %}{{ currentQuestion.user.username }}{% else %}Utilisateur désincrit{% endif %}</a>
+
+                                <a href="{{ path('question_show', {'slug': currentQuestion.slug} )}}" class="post post-date" class="">le: {{ currentQuestion.createdAt|date("d/m/Y") }}</a>
+                            </div>   
+                        </td>
+                        <td scope="row" class="votes">
+                            <div class="validate-button">
+                                <p class="d-inline-block m-0 label-number-information">Nombre de votes:</p>
+                                <span class="badge badge-light">0</span>
+                            </div>
+                            <div class="validate-button">
+                                <p class="d-inline-block m-0 label-number-information">Réponses validées:</p>
+                                <span class="badge badge-light">0</span>
+                            </div>
+                        </td>
+                    {% endif %}  
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div> 
+
+    <div class="row">
+        <div class="col">
+            <div class="d-flex justify-content-between "> 
+                <h2 class="title-category"> liste des tags</h2>
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    {% if (app.user.role == 'Moderateur') %}
+                <a href="{{ path('moderator_tag')}}" class="ask-question">Gérer les tags</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <ul class="list-tag d-flex">
+                {% for tag in tags|sort('id') %}
+                <li >
+                    <a class="post-tag-name_list" href="{{ path('questions_by_tag' , {'id': tag.id }) }}">{{ tag.tagName }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    </div> 
+
+{% endblock %}

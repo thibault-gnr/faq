@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container-form">
+        <h3 class="title-form font-weight-bold">Connexion</h3> 
+        {% if error %}
+            <div class="d-block flash-notice login d-flex justify-content-center">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        <form action="{{ path('login') }}" method="post">
+            <div class="d-flex information_div">
+            <label class="information_label" for="username">Votre nom d'utilisateur:</label>
+            <input type="text" id="username" name="_username" value="{{ last_username }}" />
+            </div>
+            <div class="d-flex information_div">
+            <label class="information_label" for="password">Password:</label>
+            <input type="password" id="password" name="_password" />
+            </div>
+            <input type="hidden" name="_target_path" value="{{ 'homepage' }}" />
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <button type="submit" class="validate-button-comment login" >login</button>
+        </form>
+        <a href="{{ path('add_user')}}" class="inscription-button">Pas encore inscrit ?</a>
+    </div>
+{% endblock %}

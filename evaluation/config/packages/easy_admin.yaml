@@ -1,0 +1,9 @@
+# config/packages/easy_admin.yaml
+easy_admin:
+    entities:
+        # change the following to the namespaces of your own entities
+        - App\Entity\Comment
+        - App\Entity\Question
+        - App\Entity\Role
+        - App\Entity\Tag
+        - App\Entity\User

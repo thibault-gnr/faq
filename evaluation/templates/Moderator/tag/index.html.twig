@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tags!{% endblock %}
+
+{% block body %}
+<h2 class="title-category"> liste des tags</h2>
+    <a href="{{ path('moderator_tag_new')}}" class="ask-question"><i class="fas fa-plus"></i> Ajouter un tag</a>
+    {% for message in app.flashes('tagg_add') %}
+        <div class="flash-notice d-flex justify-content-center tagg_add">
+            {{ message }}
+        </div>
+    {% endfor %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>tag</th>
+                <th class="d-flex justify-content-end">actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for tag in tags %}
+            <tr>
+                <td>{{ tag.id }}</td>
+                <td>{{ tag.tagName }}</td>
+                <td class="d-flex justify-content-end">
+                    <a href="{{ path('moderator_tag_edit' , {'id' :tag.id }) }}" class="btn btn-primary">
+                        <i class="fas fa-pen"></i>
+                    </a>
+                    <a href="{{ path('moderator_tag_delete' , {'id' :tag.id }) }}" class="btn btn-danger">
+                        Supprimer
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">Aucun tag présent</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
